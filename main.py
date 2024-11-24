@@ -19,10 +19,19 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            self.screen.fill('white')
             self.states[self.gameStateManager.getState()].run()
             pygame.display.update()
             self.clock.tick(60)
-
+class Button():
+    def __init__(self, x, y, path, display):
+        self.currentState = 0
+        self.x = x
+        self.y = y
+        self.display = display
+        self.image = pygame.image.load(path).convert_alpha()
+    def update(self):
+        self.display.blit(self.image, (self.x, self.y))
 class Level():
     def __init__(self, display, gameStateManager):
         self.display = display
@@ -34,6 +43,7 @@ class Start():
     def __init__(self, display, gameStateManager):
         self.display = display
         self.background = pygame.image.load('assets/background.png').convert()
+        self.startButton = Button(213, 200, 'assets/start_button.png', self.display)
         self.title1 = pygame.image.load('assets/title_1.png').convert_alpha()
         self.title2 = pygame.image.load('assets/title_2.png').convert_alpha()
         self.gameStateManager = gameStateManager
@@ -50,6 +60,7 @@ class Start():
 
         self.display.blit(self.background, (0, 0))
         self.display.blit(self.states[self.title_T], (240, 0))
+        self.startButton.update()
 
 class GameStateManager():
     def __init__(self, currentState):
