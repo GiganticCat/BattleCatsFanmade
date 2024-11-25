@@ -24,14 +24,22 @@ class Game():
             pygame.display.update()
             self.clock.tick(60)
 class Button():
-    def __init__(self, x, y, path, display):
+    def __init__(self, x, y, path, display, height, width, gameStateManager):
         self.currentState = 0
         self.x = x
         self.y = y
+        self.height = height
+        self.width = width
         self.display = display
         self.image = pygame.image.load(path).convert_alpha()
-    def update(self):
+        self.gameStateManager = gameStateManager
+    def update(self, mouse_pos):
         self.display.blit(self.image, (self.x, self.y))
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.x <= mouse_pos <= self.x + self.width and self.y <= mouse_pos <= self.y + self.height:
+                    self.gameStateManager.setState('level')
+
 class Level():
     def __init__(self, display, gameStateManager):
         self.display = display
@@ -43,10 +51,10 @@ class Start():
     def __init__(self, display, gameStateManager):
         self.display = display
         self.background = pygame.image.load('assets/background.png').convert()
-        self.startButton = Button(213, 200, 'assets/start_button.png', self.display)
         self.title1 = pygame.image.load('assets/title_1.png').convert_alpha()
         self.title2 = pygame.image.load('assets/title_2.png').convert_alpha()
         self.gameStateManager = gameStateManager
+        self.startButton = Button(213, 200, 'assets/start_button.png', self.display, 254, 48, self.gameStateManager)
         self.title_T = 1
         self.states = {0: self.title1, 1: self.title2}
         self.last_switch_time = pygame.time.get_ticks()
@@ -60,7 +68,7 @@ class Start():
 
         self.display.blit(self.background, (0, 0))
         self.display.blit(self.states[self.title_T], (240, 0))
-        self.startButton.update()
+        self.startButton.update(pygame.mouse.get_pos())
 
 class GameStateManager():
     def __init__(self, currentState):
