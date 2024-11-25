@@ -24,7 +24,7 @@ class Game():
             pygame.display.update()
             self.clock.tick(60)
 class Button():
-    def __init__(self, x, y, path, display, height, width, gameStateManager):
+    def __init__(self, x, y, path, display, width, height, gameStateManager):
         self.currentState = 0
         self.x = x
         self.y = y
@@ -35,11 +35,9 @@ class Button():
         self.gameStateManager = gameStateManager
     def update(self, mouse_pos):
         self.display.blit(self.image, (self.x, self.y))
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.x <= mouse_pos <= self.x + self.width and self.y <= mouse_pos <= self.y + self.height:
-                    self.gameStateManager.setState('level')
-
+        if pygame.mouse.get_pressed()[0]:
+            if self.x <= mouse_pos[0] <= self.x + self.width and self.y <= mouse_pos[1] <= self.y + self.height:
+                self.gameStateManager.setState('level')
 class Level():
     def __init__(self, display, gameStateManager):
         self.display = display
